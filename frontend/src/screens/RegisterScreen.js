@@ -22,7 +22,7 @@ const RegisterScreen = ({ history }) => {
         email,
         password,
       });
-      history.push('/login');
+      history.push('/');
     }
   };
 
@@ -73,7 +73,7 @@ const RegisterScreen = ({ history }) => {
           Sign Up
         </Button>
         <p>
-          Or <Link to="/login">Login </Link>
+          Or <Link to="/">Login </Link>
         </p>
         <LoginFooter />
       </Form>

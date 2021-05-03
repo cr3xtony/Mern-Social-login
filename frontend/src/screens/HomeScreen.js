@@ -1,19 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Container } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 const HomeScreen = () => {
-  let history = useHistory();
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  console.log(userInfo.name);
-  useEffect(() => {
-    if (!userInfo) {
-      history.push('/login');
-    }
-  }, [userInfo]);
+  let history = useHistory();
+
   const logoutHandler = () => {
     localStorage.removeItem('userInfo');
-    history.push('/login');
+    history.push('/');
   };
 
   return userInfo ? (
@@ -22,7 +18,7 @@ const HomeScreen = () => {
       <button onClick={logoutHandler}>Logout</button>
     </Container>
   ) : (
-    history.push('/login')
+    <Redirect to={'/'} />
   );
 };
 

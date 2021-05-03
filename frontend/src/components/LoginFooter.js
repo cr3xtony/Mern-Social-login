@@ -1,5 +1,5 @@
 import React from 'react';
-import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -48,18 +48,28 @@ const LoginFooter = () => {
 
   return (
     <div>
-      <p>
-        Login using <br></br>
-        <FacebookLogin appId="322905029180461" callback={responseFacebook} />
-        <GoogleLogin
-          clientId="22649499080-6vnfmebfftpu386ivdepmen8u21duahf.apps.googleusercontent.com"
-          buttonText="Login"
-          onSuccess={responseSuccessGoogle}
-          onFailure={responseErrorGoogle}
-          cookiePolicy={'single_host_origin'}
-        />
-        , ,
-      </p>
+      Login using <br></br>
+      <FacebookLogin
+        appId="322905029180461"
+        render={(renderProps) => (
+          <button
+            style={{ color: 'blue', outline: 'none' }}
+            onClick={renderProps.onClick}
+          >
+            <i className="fab fa-facebook-square fa-5x "></i>
+          </button>
+        )}
+        callback={responseFacebook}
+      />
+      <div style={{ display: 'block', margin: '20px' }}></div>
+      <GoogleLogin
+        clientId="22649499080-6vnfmebfftpu386ivdepmen8u21duahf.apps.googleusercontent.com"
+        buttonText="Login"
+        onSuccess={responseSuccessGoogle}
+        onFailure={responseErrorGoogle}
+        cookiePolicy={'single_host_origin'}
+      />
+      , ,
     </div>
   );
 };
