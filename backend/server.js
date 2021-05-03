@@ -26,7 +26,7 @@ app.use(express.json());
 //     }
 //   )
 // );
-const __dirname = path.resoleve();
+
 app.use('/api/users/', userRoutes);
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 app.get('*', (req, res) =>

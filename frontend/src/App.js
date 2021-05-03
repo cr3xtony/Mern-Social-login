@@ -10,9 +10,9 @@ function App() {
   return (
     <Router>
       <Container>
-        <Route path="/login" component={LoginScreen} exact />
+        <Route path="/" component={LoginScreen} exact />
         <Route path="/register" component={RegisterScreen} exact />
-        <Route path="/" component={HomeScreen} exact />
+        <Route path="/home" component={HomeScreen} exact />
       </Container>
     </Router>
   );

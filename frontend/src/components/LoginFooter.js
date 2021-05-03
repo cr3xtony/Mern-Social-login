@@ -21,7 +21,7 @@ const LoginFooter = () => {
     );
     if (data) {
       localStorage.setItem('userInfo', JSON.stringify(data));
-      history.push('/');
+      history.push('/home');
     }
   };
 
@@ -40,7 +40,7 @@ const LoginFooter = () => {
     );
     if (data) {
       localStorage.setItem('userInfo', JSON.stringify(data));
-      history.push('/');
+      history.push('/home');
     }
   };
 

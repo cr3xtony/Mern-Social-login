@@ -13,7 +13,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
-      history.push('/');
+      history.push('/home');
     }
   });
 
