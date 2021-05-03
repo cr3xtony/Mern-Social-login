@@ -29,6 +29,7 @@ const RegisterScreen = ({ history }) => {
   return (
     <Container>
       <h1>Sign Up</h1>
+      {message ? message : ''}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="name">
           <Form.Label>Name</Form.Label>
