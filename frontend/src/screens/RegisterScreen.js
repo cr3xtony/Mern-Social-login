@@ -1,35 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import LoginFooter from '../components/LoginFooter';
+import Message from '../components/Message';
 
 const RegisterScreen = ({ history }) => {
+  const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [message, setMessage] = useState(null);
-
   const submitHandler = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setMessage('Password Do Not Match');
+      setError('Password Do Not Match');
     } else {
-      await axios.post('/api/users/register', {
-        name,
-        email,
-        password,
-      });
-      history.push('/');
+      if (password.length > 3) {
+        await axios.post('/api/users/register', {
+          name,
+          email,
+          password,
+        });
+        history.push('/');
+      } else {
+        setError('Password must be 4 character or long');
+      }
     }
   };
 
   return (
     <Container>
       <h1>Sign Up</h1>
-      {message ? message : ''}
+      {error && <Message variant="danger">{error}</Message>}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="name">
           <Form.Label>Name</Form.Label>

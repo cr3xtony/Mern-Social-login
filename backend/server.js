@@ -1,6 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
+const cors = require('cors');
+const errorMiddleware = require('./middlewares/error');
 
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
@@ -9,6 +11,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
 app.use(express.json());
 
@@ -28,6 +31,7 @@ app.use(express.json());
 // );
 
 app.use('/api/users/', userRoutes);
+app.use(errorMiddleware);
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 app.get('*', (req, res) =>
   res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))

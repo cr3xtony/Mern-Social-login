@@ -1,24 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import LoginFooter from '../components/LoginFooter';
 import { useHistory } from 'react-router-dom';
+import Message from '../components/Message';
 const LoginScreen = () => {
   let history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
-      history.push('/home');
-    }
-  });
-
   const submitHandler = async (e) => {
     e.preventDefault();
+
     try {
       const config = {
         headers: {
@@ -31,6 +26,7 @@ const LoginScreen = () => {
         config
       );
       localStorage.setItem('userInfo', JSON.stringify(data));
+      history.push('/home');
     } catch (error) {
       setMessage(error.response.data.message);
     }
@@ -39,7 +35,8 @@ const LoginScreen = () => {
   return (
     <Container>
       <h1>Sign In</h1>
-      {message ? message : ''}
+
+      {message && <Message variant="danger">Email or Password Invalid</Message>}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
@@ -62,7 +59,7 @@ const LoginScreen = () => {
           />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Submit
+          Login
         </Button>
         <p>
           Or <Link to="/register">Register </Link>

@@ -9,11 +9,14 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
+      unique: false,
     },
     password: {
       type: String,
       required: true,
+    },
+    instaUserId: {
+      type: String,
     },
   },
   {
