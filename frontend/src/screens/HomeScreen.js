@@ -10,6 +10,7 @@ const HomeScreen = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -19,8 +20,16 @@ const HomeScreen = () => {
   let history = useHistory();
 
   useEffect(() => {
-    userInfo.email ? setEmail(userInfo.email) : setEmail('');
-  }, [userInfo.email]);
+    if (userInfo) {
+      userInfo.email ? setEmail(userInfo.email) : setEmail('');
+      if (userInfo.userName) {
+        setUserName(userInfo.userName);
+      }
+    }
+  }, [userInfo]);
+  if (!userInfo) {
+    <Redirect to={'/'} />;
+  }
 
   const logoutHandler = () => {
     localStorage.removeItem('instaLogin');
@@ -30,12 +39,13 @@ const HomeScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     if (!userInfo.email) {
       if (newEmail === confirmEmail) {
-        console.log('here');
         const config = {
           headers: {
             'Content-type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`,
           },
         };
         const userId = userInfo._id;
@@ -54,6 +64,7 @@ const HomeScreen = () => {
         setError('Email not matching');
       }
     }
+
     if (userInfo.password === 'mysamplepassword') {
       const userId = userInfo._id;
       if (newPassword === confirmPassword) {
@@ -61,6 +72,7 @@ const HomeScreen = () => {
           const config = {
             headers: {
               'Content-type': 'application/json',
+              Authorization: `Bearer ${userInfo.token}`,
             },
           };
           const { data } = await axios.post(
@@ -90,6 +102,7 @@ const HomeScreen = () => {
       const config = {
         headers: {
           'Content-type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
         },
       };
       try {
@@ -107,6 +120,7 @@ const HomeScreen = () => {
               const config = {
                 headers: {
                   'Content-type': 'application/json',
+                  Authorization: `Bearer ${userInfo.token}`,
                 },
               };
               const { data } = await axios.post(
@@ -135,6 +149,27 @@ const HomeScreen = () => {
       } catch (error) {
         setSuccess('');
         setError(error.response.data.message);
+      }
+    }
+
+    if (!userInfo.userName) {
+      const config = {
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const userId = userInfo._id;
+      const { data } = await axios.post(
+        '/api/users/home',
+        {
+          userId,
+          userName,
+        },
+        config
+      );
+      if (data) {
+        localStorage.setItem('userInfo', JSON.stringify(data));
       }
     }
   };
@@ -177,6 +212,32 @@ const HomeScreen = () => {
                 placeholder="Enter email"
                 value={confirmEmail}
                 onChange={(e) => setConfirmEmail(e.target.value)}
+              />
+            </Form.Group>
+          </>
+        )}
+        {userInfo.userName ? (
+          <>
+            <Form.Group controlId="userName">
+              <Form.Label>User Name</Form.Label>
+              <Form.Control
+                readOnly
+                type="text"
+                placeholder="Enter User Name"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </Form.Group>
+          </>
+        ) : (
+          <>
+            <Form.Group controlId="username">
+              <Form.Label>Enter New User Name</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="User Name"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
               />
             </Form.Group>
           </>

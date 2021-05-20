@@ -5,7 +5,7 @@ const cors = require('cors');
 const errorMiddleware = require('./middlewares/error');
 
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
+const index = require('./routes/index');
 
 dotenv.config();
 connectDB();
@@ -30,7 +30,7 @@ app.use(express.json());
 //   )
 // );
 
-app.use('/api/users/', userRoutes);
+app.use('/api/', index);
 app.use(errorMiddleware);
 app.use(express.static(path.join(__dirname, '/frontend/build')));
 app.get('*', (req, res) =>

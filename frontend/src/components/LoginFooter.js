@@ -27,6 +27,7 @@ const LoginFooter = () => {
       },
       config
     );
+    console.log(data);
     if (data) {
       localStorage.setItem('userInfo', JSON.stringify(data));
       history.push('/home');

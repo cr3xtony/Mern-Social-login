@@ -18,11 +18,13 @@ const generateToken = (id) => {
 exports.authUser = async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ $or: [{ email }, { userName: email }] });
+
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,
       name: user.name,
+      userName: user.userName,
       email: user.email,
       password: 'databasepassword',
       token: generateToken(user._id),
@@ -33,8 +35,10 @@ exports.authUser = async (req, res, next) => {
 };
 
 exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  const userExist = await User.findOne({ email });
+  const { name, email, password, userName } = req.body;
+  const userExist = await User.findOne({
+    $or: [{ email }, { userName: email }],
+  });
   if (userExist) {
     return next(new ErrorHandler('User Exists', 404));
   }
@@ -42,6 +46,7 @@ exports.registerUser = async (req, res) => {
     name,
     email,
     password,
+    userName,
   });
   if (user) {
     res.status(201).json({
@@ -71,6 +76,7 @@ exports.googleauth = async (req, res, next) => {
             res.json({
               _id: user._id,
               name: user.name,
+              userName: user.userName,
               email: user.email,
               password: 'mysamplepassword',
               token: generateToken(user._id),
@@ -79,6 +85,7 @@ exports.googleauth = async (req, res, next) => {
             res.json({
               _id: user._id,
               name: user.name,
+              userName: user.userName,
               email: user.email,
               password: 'databasepassword',
               token: generateToken(user._id),
@@ -94,6 +101,7 @@ exports.googleauth = async (req, res, next) => {
             res.json({
               _id: user._id,
               name: user.name,
+              userName: user.userName,
               email: user.email,
               password: 'mysamplepassword',
               token: generateToken(user._id),
@@ -123,6 +131,7 @@ exports.facebookauth = async (req, res, next) => {
             res.json({
               _id: user._id,
               name: user.name,
+              userName: user.userName,
               email: user.email,
               password: 'mysamplepassword',
               token: generateToken(user._id),
@@ -131,6 +140,7 @@ exports.facebookauth = async (req, res, next) => {
             res.json({
               _id: user._id,
               name: user.name,
+              userName: user.userName,
               email: user.email,
               password: 'databasepassword',
               token: generateToken(user._id),
@@ -147,6 +157,7 @@ exports.facebookauth = async (req, res, next) => {
               res.json({
                 _id: user._id,
                 name: user.name,
+                userName: user.userName,
                 email: user.email,
                 password: 'mysamplepassword',
                 token: generateToken(user._id),
@@ -155,6 +166,7 @@ exports.facebookauth = async (req, res, next) => {
               res.json({
                 _id: user._id,
                 name: user.name,
+                userName: user.userName,
                 email: user.email,
                 password: 'databasepassword',
                 token: generateToken(user._id),
@@ -190,32 +202,35 @@ exports.instagramauth = async (req, res, next) => {
 
   const userExist = await User.findOne({ instaUserId: userid });
   if (userExist) {
-    if (userExist.matchPassword('mysamplepassword')) {
+    if (await userExist.matchPassword('mysamplepassword')) {
       res.json({
         _id: userExist._id,
-        name: userExist.name,
+        userName: userExist.userName,
+        name: user.name,
         email: userExist.email,
         password: 'mysamplepassword',
         token: generateToken(userExist._id),
       });
     } else {
       res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
+        _id: userExist._id,
+        userName: userExist.userName,
+        name: userExist.name,
+        email: userExist.email,
         password: 'databasepassword',
-        token: generateToken(user._id),
+        token: generateToken(userExist._id),
       });
     }
   } else {
     const user = await User.create({
-      name: username,
+      userName: username,
       instaUserId: userid,
       password: 'mysamplepassword',
     });
     if (user) {
       res.json({
         _id: user._id,
+        userName: user.userName,
         name: user.name,
         email: user.email,
         password: 'mysamplepassword',
@@ -231,9 +246,12 @@ exports.instagramauth = async (req, res, next) => {
 exports.userUpdate = async (req, res, next) => {
   const user = await User.findById(req.body.userId);
   if (user) {
+    console.log(req.body);
     let setPassword = 'mysamplepassword';
     user.email = req.body.email || user.email;
+    user.userName = req.body.userName || user.userName;
     user.password = req.body.password || user.password;
+    user.token = req.body.token || user.token;
     if (req.body.password) {
       user.password = req.body.password;
       setPassword = 'databasepassword';
@@ -243,9 +261,10 @@ exports.userUpdate = async (req, res, next) => {
     res.json({
       _id: updateUser._id,
       name: updateUser.name,
+      userName: user.userName,
       email: updateUser.email,
       password: setPassword,
-      token: updateUser.token,
+      token: generateToken(updateUser._id),
     });
   } else {
     return next(new ErrorHandler('User Not Found', 404));
@@ -261,6 +280,7 @@ exports.checkUserPass = async (req, res, next) => {
     res.json({
       _id: user._id,
       name: user.name,
+      userName: user.userName,
       email: user.email,
       password: 'databasepassword',
       token: user.token,

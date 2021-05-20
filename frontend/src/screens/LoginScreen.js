@@ -25,6 +25,7 @@ const LoginScreen = () => {
         { email, password },
         config
       );
+
       localStorage.setItem('userInfo', JSON.stringify(data));
       history.push('/home');
     } catch (error) {
@@ -38,11 +39,11 @@ const LoginScreen = () => {
 
       {message && <Message variant="danger">Email or Password Invalid</Message>}
       <Form onSubmit={submitHandler}>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
+        <Form.Group controlId="usernameoremail">
+          <Form.Label>Email address/User Name</Form.Label>
           <Form.Control
-            type="email"
-            placeholder="Enter email"
+            type="text"
+            placeholder="Enter email or username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

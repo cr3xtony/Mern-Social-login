@@ -8,6 +8,7 @@ import Message from '../components/Message';
 const RegisterScreen = ({ history }) => {
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,6 +20,7 @@ const RegisterScreen = ({ history }) => {
     } else {
       if (password.length > 3) {
         await axios.post('/api/users/register', {
+          userName,
           name,
           email,
           password,
@@ -42,6 +44,16 @@ const RegisterScreen = ({ history }) => {
             placeholder="Enter Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="userName">
+          <Form.Label>User Name</Form.Label>
+          <Form.Control
+            type="name"
+            placeholder="Enter User Name"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
           ></Form.Control>
         </Form.Group>
 
